@@ -29,12 +29,10 @@ fn main() {
 
     // populate source env values
     let mut dict: HashMap<String, String> = HashMap::new();
-    for line_read in io::BufReader::new(file).lines() {
-        if let Ok(line) = line_read {
-            let res = crate::parser::parse_env_line(&line);
-            if let Some((key, val)) = res {
-                dict.insert(key, val);
-            }
+    for line in io::BufReader::new(file).lines().map_while(Result::ok) {
+        let res = crate::parser::parse_env_line(&line);
+        if let Some((key, val)) = res {
+            dict.insert(key, val);
         }
     }
 }

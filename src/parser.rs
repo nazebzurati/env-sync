@@ -25,7 +25,7 @@ pub fn parse_env_line(line: &str) -> Option<(String, String)> {
     let val = parts[1..].join("");
     let val = val.trim();
 
-    return Some((key.to_string(), val.to_string()));
+    Some((key.to_string(), val.to_string()))
 }
 
 #[cfg(test)]
