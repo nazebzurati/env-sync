@@ -87,6 +87,31 @@ mod tests {
     }
 
     #[test]
+    fn test_kv4() {
+        expect_value("NAME = ", "NAME", "");
+    }
+
+    #[test]
+    fn test_kv5() {
+        expect_value("NAME=", "NAME", "");
+    }
+
+    #[test]
+    fn test_kv6() {
+        expect_value("NAME= ", "NAME", "");
+    }
+
+    #[test]
+    fn test_kv7() {
+        expect_value("NAME=# ", "NAME", "");
+    }
+
+    #[test]
+    fn test_kv8() {
+        expect_value("NAME= # ", "NAME", "");
+    }
+
+    #[test]
     fn test_ignore_comment1() {
         expect_none("#NAME=ENVF");
     }
@@ -109,5 +134,14 @@ mod tests {
     #[test]
     fn test_ignore_comment5() {
         expect_value("NAME = ENVF#this is a comment", "NAME", "ENVF");
+    }
+
+    #[test]
+    fn test_ignore_comment6() {
+        expect_none("#NAME=");
+    }
+    #[test]
+    fn test_ignore_comment7() {
+        expect_none("#NAME= ");
     }
 }
