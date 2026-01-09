@@ -101,18 +101,20 @@ fn main() {
 
     // filter used variable and sort by key alphabetically
     let mut items: Vec<_> = dict.iter().collect();
-    items.sort_by(|a, b| a.0.cmp(b.0));
     items.retain(|(_k, v)| !v.is_used);
+    items.sort_by(|a, b| a.0.cmp(b.0));
 
-    // populate unused variable
-    let res_unused_title = writeln!(writer, "\n# Unused variables");
-    if let Err(e) = res_unused_title {
-        eprintln!("{}", e);
-    }
-    for (key, item) in items.iter() {
-        let res_write = writeln!(writer, "# {}={}", key, item.value);
-        if let Err(e) = res_write {
+    // populate unused variable, if any
+    if !items.is_empty() {
+        let res_unused_title = writeln!(writer, "\n# Unused variables");
+        if let Err(e) = res_unused_title {
             eprintln!("{}", e);
+        }
+        for (key, item) in items.iter() {
+            let res_write = writeln!(writer, "# {}={}", key, item.value);
+            if let Err(e) = res_write {
+                eprintln!("{}", e);
+            }
         }
     }
 
