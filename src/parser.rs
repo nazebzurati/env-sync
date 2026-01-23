@@ -26,7 +26,7 @@ pub fn get_key_val(line: &str) -> Option<(String, String)> {
     }
 
     let key = parts[0].trim();
-    let val = parts[1..].join("");
+    let val = parts[1..].join("=");
     let val = val.trim();
 
     Some((key.to_string(), val.to_string()))
@@ -68,80 +68,28 @@ mod tests {
     }
 
     #[test]
-    fn test_kv1() {
+    fn test_kv() {
         expect_value("NAME=ENVF", "NAME", "ENVF");
-    }
-
-    #[test]
-    fn test_kv2() {
         expect_value("NAME=\"ENVF\"", "NAME", "\"ENVF\"");
-    }
-
-    #[test]
-    fn test_kv3() {
-        expect_value(
-            "NAME = \"ENVF#thisisnotacomment\"",
-            "NAME",
-            "\"ENVF#thisisnotacomment\"",
-        );
-    }
-
-    #[test]
-    fn test_kv4() {
+        expect_value("NAME = \"ENVF#no\"", "NAME", "\"ENVF#no\"");
         expect_value("NAME = ", "NAME", "");
-    }
-
-    #[test]
-    fn test_kv5() {
         expect_value("NAME=", "NAME", "");
-    }
-
-    #[test]
-    fn test_kv6() {
         expect_value("NAME= ", "NAME", "");
-    }
-
-    #[test]
-    fn test_kv7() {
         expect_value("NAME=# ", "NAME", "");
-    }
-
-    #[test]
-    fn test_kv8() {
         expect_value("NAME= # ", "NAME", "");
+        expect_value("NAME = \"ENVF#no=\"", "NAME", "\"ENVF#no=\"");
+        expect_value("NAME = \"ENVF#no=comment\"", "NAME", "\"ENVF#no=comment\"");
+        expect_value("NAME = \"=ENVF#no\"", "NAME", "\"=ENVF#no\"");
     }
 
     #[test]
-    fn test_ignore_comment1() {
+    fn test_ignore_comment() {
         expect_none("#NAME=ENVF");
-    }
-
-    #[test]
-    fn test_ignore_comment2() {
         expect_none("       #NAME=ENVF");
-    }
-
-    #[test]
-    fn test_ignore_comment3() {
         expect_none("#        NAME=ENVF");
-    }
-
-    #[test]
-    fn test_ignore_comment4() {
         expect_value("NAME = ENVF # this is a comment", "NAME", "ENVF");
-    }
-
-    #[test]
-    fn test_ignore_comment5() {
         expect_value("NAME = ENVF#this is a comment", "NAME", "ENVF");
-    }
-
-    #[test]
-    fn test_ignore_comment6() {
         expect_none("#NAME=");
-    }
-    #[test]
-    fn test_ignore_comment7() {
         expect_none("#NAME= ");
     }
 }

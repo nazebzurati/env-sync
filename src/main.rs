@@ -1,5 +1,6 @@
-use clap::Parser;
+use clap::{ArgAction, Parser};
 use std::collections::HashMap;
+use std::env;
 use std::fs::File;
 use std::io::{self, BufRead, Write};
 use std::path::Path;
@@ -21,11 +22,16 @@ struct Args {
     /// Output .env file path
     #[arg(short, long)]
     output: String,
+
+    /// Include system envs only if templated (optional)
+    #[arg(long, action = ArgAction::SetTrue, default_value_t = false)]
+    include_system: bool,
 }
 
 struct EnvInfo {
     value: String,
     is_used: bool,
+    is_system: bool,
 }
 
 fn main() {
@@ -69,6 +75,22 @@ fn main() {
                 EnvInfo {
                     value: val,
                     is_used: false,
+                    is_system: false,
+                },
+            );
+        }
+    }
+
+    // include system env
+    println!("{}", args.include_system);
+    if args.include_system {
+        for (key, value) in env::vars() {
+            dict.insert(
+                key,
+                EnvInfo {
+                    value,
+                    is_used: false,
+                    is_system: true,
                 },
             );
         }
@@ -111,6 +133,10 @@ fn main() {
             eprintln!("{}", e);
         }
         for (key, item) in items.iter() {
+            // system will not be part of unused
+            if item.is_system {
+                continue;
+            }
             let res_write = writeln!(writer, "# {}={}", key, item.value);
             if let Err(e) = res_write {
                 eprintln!("{}", e);
