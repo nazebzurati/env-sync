@@ -1,6 +1,6 @@
 [package]
 name = "env-sync"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["Nazeb Zurati"]
 description = "A simple dotenv file syncer that keeps your messy .env in sync with your template, placing values in the correct order."
