@@ -82,7 +82,6 @@ fn main() {
     }
 
     // include system env
-    println!("{}", args.include_system);
     if args.include_system {
         for (key, value) in env::vars() {
             dict.insert(
